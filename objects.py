@@ -13,6 +13,9 @@ class Checkpoint:
 		pygame.draw.rect(self.screen, self.color, self.location)
 
 	
+	def get_rect(self):
+		return pygame.Rect(self.location)
+
 	def get_spawn_loc(self):
 		x,y,w,h = self.location
 		return (x + w / 2 - 20, y + h / 2 - 20)
@@ -28,7 +31,8 @@ class Border:
 	def draw(self):
 		pygame.draw.rect(self.screen, self.color, self.location)
 
-
+	def get_rect(self):
+		return pygame.Rect(self.location)
 
 # actual background the player will be moving on 
 class Rectangle:

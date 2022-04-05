@@ -1,4 +1,6 @@
 import pygame
+import parser
+from enemy import Enemy
 from objects import Rectangle, Border, Checkpoint
 
 class Game:
@@ -19,15 +21,12 @@ class Game:
 			self.currentLevel.load_level()
 			spawn = self.currentLevel.checkpoints[0].get_spawn_loc()
 			self.player.set_spawn_point(spawn[0], spawn[1])
+			self.player.spawn()
 			self.newLevel = False
 
-		self.currentLevel.draw_level()
+		self.currentLevel.draw_level(self.player)
 		self.player.move(dt)
 		
-
-
-
-
 
 class Level:
 	def __init__(self, screen, level):
@@ -41,57 +40,8 @@ class Level:
 		self.rectangles = []
 		self.level = level
 
-	def parse_data(self, block):	
-		#contains the variables in our level file
-		variables = {}
-		#removes the comments 
-		lines = block.split("\n")
-		attributes = []
-		current_object = []
-		for index, line in enumerate(lines):
-			print(line)	
-			# remove comments tabs and spaces
-			line = line.split('#', 1)[0]
-			line = line.replace('\t', "")
-			line = line.replace(' ', "")
-			
-			#replace variabls with their assigned value
-			for var in variables:
-				line = line.replace(var[0], str(variables[var]))
-
-			#check for assigment or declaration	
-			if '=' in line: 
-				declaration = line.split('=')
-				#checks if the declartion is for attribute or variable
-				if len(declaration[0]) < 2:
-					variables[declaration[0]] = eval(declaration[1])
-				else:
-					#make the string tuples to int tuples
-					if '(' in line:
-						# remove the name of the attribute and the '='
-						line = ''.join(declaration[1:])
-						line = line.replace('(', "")
-						line = line.replace(')', "")
-						line = line.split(',')
-						line = [eval(x) for x in line]
-						#convert to int tuple to pass attributes
-						current_object.append(tuple(line))	
-					#just append attribute as int 	
-					else:
-						current_object.append(int(declaration[1]))	
-			#add the attributes
-			if line in self.attributes:
-				current_object.append(line)
-			#FIX THIS LINE
-			if line == "SUB":
-				attributes.append(current_object)
-				current_object = []
-		attributes.append(current_object)
-		return attributes	
-
-	def parse_attributes(self, attributes):
+	def parse_data(self, attributes):	
 		#create all our object and add them to level arrays
-		print(attributes)
 		for obj in attributes:
 			if len(obj) < 1:
 				continue
@@ -104,6 +54,9 @@ class Level:
 			elif obj[0] == "RECT":
 				rect = Rectangle(self.screen, obj[1])
 				self.rectangles.append(rect)
+			elif obj[0] == "ENEMY":
+				enemy = Enemy(self.screen, obj[1])
+				self.enemies.append(enemy)
 					 
 					
 	def load_level(self):
@@ -112,15 +65,27 @@ class Level:
 		
 		blocks = data.split("END\n\n")
 		for block in blocks:
-			attributes = self.parse_data(block)
-			self.parse_attributes(attributes)
+			attributes = parser.parse_block(block)
+			self.parse_data(attributes)
 		self.hasLoaded = True
 		f.close()
 
-	def draw_level(self):
+	def draw_level(self, player):
+		player_rect = player.get_rect()
 		for checkpoint in self.checkpoints:
 			checkpoint.draw()
+			# sets the players spawn to the checkpoint
+			if checkpoint.get_rect().colliderect(player_rect):
+				spawn = checkpoint.get_spawn_loc()
+				player.set_spawn_point(spawn[0], spawn[1])
+	
 		for rectangle in self.rectangles:
 			rectangle.draw()
 		for border in self.borders:
 			border.draw()
+			border_rect = border.get_rect()
+			# stops player from going through walls
+			player.stop_player(border_rect)
+	
+		for enemy in self.enemies:
+			enemy.draw()

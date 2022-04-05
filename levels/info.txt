@@ -1,12 +1,15 @@
 The level .txt files specify the format of a the level
 
-Need to create a preprocessor
 
 Parser takes in one block at a time 
 Each block is seperated by two new lines
 variables only exist within that block
 Each block starts with the type of object then newline
 Then any variable declared like x=5 with no spaces
+
+functions builtin:
+	arguements are passed with a comma space
+	func(a, b)`
 
 
 Checkpoints
@@ -20,4 +23,3 @@ Border lines
 
 Start location
 
-x=5

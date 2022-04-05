@@ -1,41 +1,15 @@
 #start of file
 #object attributes are full words
 CHECKPOINT 
-	w=150 #hello world
+	w=150 
 	h=325
 	x=100
-	y=100
-	loc=(x,y,w,h)	
-	SUB
-	BORDER	
-		loc=(x-5,y,5,h)
-	SUB
-	BORDER
-		loc=(x-5,y-5,w+5,5)
-	SUB
-	BORDER
-		loc=(x-5,y+h,w+5,5)
-	SUB
-	BORDER
-		loc=(x+w,y-5,5,h-50)
+	y=250
+	loc=(x,y,w,h)
+	CALC_BORDERS((x,y,w,h), (2))
+	
+
 END
 
 
-RECT
-	x=250
-	y=100-5
-	w=350
-	h=330
-	loc=(x,y,w,h)
-	SUB
-	BORDER
-		loc=(x,y,w,5)
-	SUB
-	BORDER
-		loc=(x,y+h,w,5)
-	SUB
-	RECT	
-		loc=(x+w,y-30,30,h+30)
-END	
-
-			
+		

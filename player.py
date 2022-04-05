@@ -37,21 +37,11 @@ class Player:
 	# stops the player if it collides with border
 	def stop_player(self, rect):
 		p_rect = self.get_rect()
-		# right border collision
-		if p_rect.left < rect.right and p_rect.left > rect.left and p_rect.bottom <= rect.bottom and p_rect.top >= rect.top:
-			 self.x = rect.right
-
-		# left border collision
-		elif p_rect.right > rect.left and p_rect.right < rect.right and p_rect.bottom <= rect.bottom and p_rect.top >= rect.top:
-				self.x = rect.left - self.pWidth
-
-		# top border collsion
-		elif p_rect.top < rect.bottom and p_rect.top > rect.top and p_rect.right <= rect.right and p_rect.left >= rect.left:	
-				self.y = rect.bottom
 		
-		#bottom border collision
-		elif p_rect.bottom > rect.top and p_rect.bottom < rect.bottom and p_rect.right <= rect.right and p_rect.left >= rect.left:
-				self.y = rect.top - self.pWidth
+		# top border collision
+		if p_rect.top <= rect.bottom:
+			self.y = rect.bottom
+
 
 	def move(self, dt):
 		keys = pygame.key.get_pressed()
