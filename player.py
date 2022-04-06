@@ -32,28 +32,41 @@ class Player:
 		self.y = self.spawnPoint[1]
 		self.screen.blit(self.image, self.spawnPoint)
 
-
-	
+		
 	# stops the player if it collides with border
-	def stop_player(self, rect):
+	def stop_player(self, borders, direction):
 		p_rect = self.get_rect()
 		
-		# top border collision
-		if p_rect.top <= rect.bottom:
-			self.y = rect.bottom
+		for rect in borders:
+			rect = rect.get_rect()
+			if p_rect.colliderect(rect):
+				if direction == "RIGHT":
+					self.x = rect.left - self.pWidth	
 
+				elif direction == "LEFT":
+					self.x = rect.right
 
-	def move(self, dt):
+				elif direction == "UP":
+					self.y = rect.bottom
+				else:
+					self.y = rect.top - self.pWidth
+				
+		
+
+	def move(self, dt, borders):
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_LEFT]:
 			self.x -= self.speed * dt
+			self.stop_player(borders, "LEFT")
 		if keys[pygame.K_RIGHT]:
 			self.x += self.speed * dt
+			self.stop_player(borders, "RIGHT")
 		if keys[pygame.K_UP]:
 			self.y -= self.speed * dt
+			self.stop_player(borders, "UP")
 		if keys[pygame.K_DOWN]:
 			self.y += self.speed * dt
-
+			self.stop_player(borders, "DOWN")
 		#keeps the player on the screen
 		if self.x < 0:
 			self.x = 0
