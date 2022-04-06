@@ -14,6 +14,23 @@ class Game:
 		self.newLevel = True
 		self.currentLevel = ""
 
+		pygame.font.init()
+		self.gameFont = pygame.font.SysFont("Arial", 45)
+	
+
+	def draw_hud(self):
+		 # draws black rectangle at top of screen
+		 pygame.draw.rect(self.screen, (0,0,0), (0,0,self.width, 50))
+		 # draws black rectangel at bottom of screen
+		 pygame.draw.rect(self.screen, (0,0,0), (0,self.height-50,self.width,50))
+
+		 # draws the level text
+		 level_text = self.gameFont.render("Level: " + str(self.level),False, (255,255,255))		
+		 self.screen.blit(level_text, (5,0))
+
+		 # draws the fails text
+		 fail_text = self.gameFont.render("Fails: " + str(self.deaths), False, (255,255,255))
+		 self.screen.blit(fail_text, (self.width - 200, 0))
 
 	def play_game(self, dt):
 		if self.newLevel:
@@ -23,9 +40,10 @@ class Game:
 			self.player.set_spawn_point(spawn[0], spawn[1])
 			self.player.spawn()
 			self.newLevel = False
-
+	
+		self.draw_hud()
 		self.currentLevel.draw_level(self.player)
-		self.player.move(dt)
+		self.player.move(dt,self.currentLevel.get_borders())
 		
 
 class Level:
@@ -82,10 +100,9 @@ class Level:
 		for rectangle in self.rectangles:
 			rectangle.draw()
 		for border in self.borders:
-			border.draw()
-			border_rect = border.get_rect()
-			# stops player from going through walls
-			player.stop_player(border_rect)
-	
+			border.draw()	
 		for enemy in self.enemies:
 			enemy.draw()
+
+	def get_borders(self):
+		return self.borders
