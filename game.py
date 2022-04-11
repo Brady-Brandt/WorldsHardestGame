@@ -42,7 +42,7 @@ class Game:
 			self.newLevel = False
 	
 		self.draw_hud()
-		self.currentLevel.draw_level(self.player)
+		self.currentLevel.draw_level(self.player, dt)
 		self.player.move(dt,self.currentLevel.get_borders())
 		
 
@@ -73,7 +73,7 @@ class Level:
 				rect = Rectangle(self.screen, obj[1])
 				self.rectangles.append(rect)
 			elif obj[0] == "ENEMY":
-				enemy = Enemy(self.screen, obj[1])
+				enemy = Enemy(self.screen, obj[1], obj[2])
 				self.enemies.append(enemy)
 					 
 					
@@ -88,8 +88,12 @@ class Level:
 		self.hasLoaded = True
 		f.close()
 
-	def draw_level(self, player):
+	def draw_level(self, player, dt):
 		player_rect = player.get_rect()
+		for rectangle in self.rectangles:
+			rectangle.draw()
+		for border in self.borders:
+			border.draw()	
 		for checkpoint in self.checkpoints:
 			checkpoint.draw()
 			# sets the players spawn to the checkpoint
@@ -97,12 +101,9 @@ class Level:
 				spawn = checkpoint.get_spawn_loc()
 				player.set_spawn_point(spawn[0], spawn[1])
 	
-		for rectangle in self.rectangles:
-			rectangle.draw()
-		for border in self.borders:
-			border.draw()	
+
 		for enemy in self.enemies:
-			enemy.draw()
+			enemy.draw(dt)
 
 	def get_borders(self):
 		return self.borders
