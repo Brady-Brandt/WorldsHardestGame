@@ -11,7 +11,7 @@ class Player:
 		self.y = 250
 		self.speed = 100
 		self.spawnPoint = (0,0)
-		self.pWidth = 25
+		self.pWidth = 20
 
 	def get_rect(self):
 		return pygame.Rect(self.x, self.y, self.pWidth, self.pWidth)
