@@ -1,14 +1,75 @@
 #start of file
 #object attributes are full words
 CHECKPOINT 
-	w=150 
-	h=325
+	w=100 
+	h=225
 	x=100
-	y=250
+	y=260
 	loc=(x,y,w,h)
-	CALC_BORDERS((x,y,w,h), (2))
-	
+	CALC_BORDERS((x,y,w,h), (1,2,4))
 
+	SUB
+		BORDER
+			loc=(x+w,y-5,5,h-PWIDTH)
+
+	# tiny rectangle outside of the checkpoint
+	SUB
+		RECT
+			loc=(x+w,y+h-PWIDTH,PWIDTH*2,PWIDTH)
+			CALC_BORDERS((x+w,y+h-PWIDTH,PWIDTH*2,PWIDTH), (3,4), 2)
+		SUB
+			BORDER
+				loc=(x+w,y+h-PWIDTH-5,PWIDTH,5)
+
+	# big rectangle where the enemies are located
+	SUB
+		big_rect_width=300
+		rect_x=x+w+PWIDTH
+		rect_y=y+PWIDTH*2
+		RECT
+			loc=(x+w+PWIDTH,rect_y,big_rect_width,160)
+			CALC_BORDERS((rect_x,rect_y,big_rect_width,160), (1,2))
+
+		SUB
+			BORDER
+				loc=(x+w+PWIDTH*2,rect_y+160,big_rect_width,5)	
+			
+		SUB
+			ENEMY
+				loc=(rect_x,y+50)
+				mov=((1,0,big_rect_width),(-1,0,big_rect_width))
+	SUB	
+		RECT
+			smallx=x+big_rect_width+w+PWIDTH
+			loc=(smallx,y+PWIDTH,PWIDTH,180)
+			CALC_BORDERS((smallx,y+PWIDTH,PWIDTH,180), (2,4))
+
+		SUB
+			BORDER
+				loc=(smallx-5,y+PWIDTH,5,PWIDTH)	
+
+		SUB
+			BORDER
+				loc=(smallx+PWIDTH,y+PWIDTH*2,5,160)
+
+	SUB
+		RECT
+			loc=(smallx+PWIDTH,y+PWIDTH,PWIDTH,PWIDTH)
+			CALC_BORDERS((smallx+PWIDTH,y+PWIDTH,PWIDTH,PWIDTH), (2))
+			
+		SUB
+			BORDER
+				loc=(smallx+PWIDTH,y+PWIDTH+PWIDTH,PWIDTH,5)
+
+	#final checkpoint
+	SUB
+		CHECKPOINT	
+			loc=(smallx+PWIDTH*2,y+PWIDTH,100,225)
+			CALC_BORDERS((smallx+PWIDTH*2,y+PWIDTH,100,225), (2,3,4))
+
+		SUB
+			BORDER
+				loc=(smallx+PWIDTH*2-5,y+PWIDTH*2,5,225-PWIDTH)
 END
 
 
