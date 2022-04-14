@@ -1,5 +1,5 @@
 import functions
-attrib_declaration_keywords = ["loc", "mov"]
+attrib_declaration_keywords = ["loc", "mov", "end"]
 attribute_objects = ["CHECKPOINT", "ENEMY", "BORDER", "RECT"]
 
 def remove_comments(line):
@@ -96,6 +96,8 @@ def parse_block(block):
 	variables = {
 		"PWIDTH" : 20,
         "ERADIUS" : 12,
+        "TRUE": 1,
+        "FALSE": 0,
 	}
 	#removes the comments 
 	lines = block.split("\n")
