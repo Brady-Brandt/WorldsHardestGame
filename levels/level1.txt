@@ -6,6 +6,7 @@ CHECKPOINT
 	x=100
 	y=260
 	loc=(x,y,w,h)
+	end=FALSE
 	CALC_BORDERS((x,y,w,h), (1,2,4))
 
 	SUB
@@ -35,9 +36,30 @@ CHECKPOINT
 				loc=(x+w+PWIDTH*2,rect_y+160,big_rect_width,5)	
 			
 		SUB
+			movement=big_rect_width-ERADIUS
+			distance_between=ERADIUS*2 + PWIDTH/2
+			start_one=rect_x+ERADIUS
+			start_two=rect_x+big_rect_width
+			y_start=y+60
 			ENEMY
-				loc=(rect_x,y+50)
-				mov=((1,0,big_rect_width),(-1,0,big_rect_width))
+				loc=(start_one,y_start)
+				mov=((4,0,movement),(-4,0,movement))
+		SUB
+			ENEMY
+				loc=(start_two,y_start+distance_between)
+				mov=((-4,0,movement),(4,0,movement))
+		SUB
+			ENEMY
+				loc=(start_one,y_start+2*distance_between)
+				mov=((4,0,movement), (-4,0,movement))
+		SUB
+			ENEMY
+				loc=(start_two, y_start+3*distance_between)
+				mov=((-4,0,movement), (4,0,movement))
+		SUB
+			ENEMY
+				loc=(start_one, y_start+4*distance_between)
+				mov=((4,0,movement), (-4,0,movement))
 	SUB	
 		RECT
 			smallx=x+big_rect_width+w+PWIDTH
@@ -65,6 +87,7 @@ CHECKPOINT
 	SUB
 		CHECKPOINT	
 			loc=(smallx+PWIDTH*2,y+PWIDTH,100,225)
+			end=TRUE
 			CALC_BORDERS((smallx+PWIDTH*2,y+PWIDTH,100,225), (2,3,4))
 
 		SUB
