@@ -43,7 +43,9 @@ class Game:
 
         self.draw_hud()
         self.currentLevel.draw_level(self.player, dt)
-        self.player.move(dt,self.currentLevel.get_borders())
+        self.player.move(dt, self.currentLevel.get_borders(), self.currentLevel.get_enemies())
+        self.player.collide_enemy(self.currentLevel.get_enemies())
+        self.deaths = self.player.get_deaths()
 
 
 class Level:
@@ -57,7 +59,6 @@ class Level:
         self.borders = []
         self.rectangles = []
         self.level = level
-        self.hasCollided = False
 
     def parse_data(self, attributes):	
         #create all our object and add them to level arrays
@@ -105,8 +106,9 @@ class Level:
 
         for enemy in self.enemies:
             enemy.draw(dt)
-            if enemy.collide_player(player_rect):
-                print("Collide")
 
     def get_borders(self):
         return self.borders
+
+    def get_enemies(self):
+        return self.enemies

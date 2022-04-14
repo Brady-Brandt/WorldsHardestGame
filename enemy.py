@@ -12,7 +12,6 @@ class Enemy:
         self.radius = 12
         self.speed = 75
         self.color = (0,0,255)
-        self.center = (self.x + self.radius, self.y + self.radius)
         self.movement = movement
         
         # parse our movement tuple into an array of 3d vectors
@@ -32,35 +31,11 @@ class Enemy:
         self.startx = self.x
         self.starty = self.y
 
-    # returns the distance squared between two points
-    def distance_squared(self, point1, point2):
-        x1,y1 = point1
-        x2,y2 = point2
+    def get_center(self):
+        return (self.x, self.y)
 
-        return (y2-y1) ** 2 + (x2 - x1) ** 2
-
-    # takes in the player rect and returns a boolean if they collide 
-    def collide_player(self, player):
-        self.center = (self.x + self.radius, self.y + self.radius)
-        radius_sq = self.radius ** 2
-
-
-        if self.distance_squared(player.center, self.center) == radius_sq - (player.left - player.right) / 2:
-            return True
-        # check if the circle collides with any four corners of the player
-        if self.distance_squared(player.topleft, self.center) == radius_sq:
-            return True
-
-        if self.distance_squared(player.topright, self.center) == radius_sq:
-            return True
-
-        if self.distance_squared(player.bottomleft, self.center) == radius_sq:
-            return True
-
-        if self.distance_squared(player.bottomleft, self.center) == radius_sq:
-            return True
-    
-        return False
+    def get_radius(self):
+        return self.radius
 
     def draw(self, dt):
         # keeps track of how far to move in a direction
