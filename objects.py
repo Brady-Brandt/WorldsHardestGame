@@ -6,7 +6,7 @@ class Checkpoint:
     def __init__(self, screen, location, is_end):
         self.screen = screen
         self.location = location
-        self.color = (0,255,0)#GREEN
+        self.color = (149,237,100)
         self.is_end = bool(is_end)
 
     def last_checkpoint(self):

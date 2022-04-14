@@ -5,7 +5,7 @@ from game import Game
 
 SCREEN_DIM = (800, 800)
 WHITE = (255, 255, 255)
-BACKGROUND = (135, 206, 235)
+BACKGROUND = (100, 149, 237)
 pygame.init()
 
 screen = pygame.display.set_mode(SCREEN_DIM, vsync=1)
