@@ -95,6 +95,7 @@ def parse_block(block):
 	#contains the variables in our level file
 	variables = {
 		"PWIDTH" : 20,
+        "ERADIUS" : 12,
 	}
 	#removes the comments 
 	lines = block.split("\n")
