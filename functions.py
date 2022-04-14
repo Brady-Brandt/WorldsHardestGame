@@ -11,8 +11,8 @@ def calc_borders(params):
 	h = rect[3]
 	left_border = (x-BORDERW, y-BORDERW, BORDERW, h+BORDERW)
 	top_border = (x-BORDERW, y-BORDERW, w+BORDERW,BORDERW)
-	right_border = (w+x, y-BORDERW, BORDERW, h+BORDERW)
-	bottom_border = (x-BORDERW, y+h, w+BORDERW+BORDERW, BORDERW) # get it into proper parsing format
+	right_border = (w+x, y-BORDERW, BORDERW, h+BORDERW*2)
+	bottom_border = (x-BORDERW, y+h, w+BORDERW, BORDERW) # get it into proper parsing format
 	left_border = ["BORDER", left_border]
 	top_border = ["BORDER", top_border]
 	right_border = ["BORDER", right_border]
