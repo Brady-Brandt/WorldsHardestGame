@@ -28,7 +28,17 @@ def calc_borders(params):
 		borders = []
 		for border in params[1]:
 			borders.append(result[border - 1])
-		return borders	
+
+		# fills in the space normally used for border with a white
+		# background color	
+		if len(params) == 3:
+			for i in params[2]:
+				rect = result[i-1]
+				rect[0] = "RECT"
+				borders.append(rect)	
+		return borders
+
+		
 
 	return result
 
@@ -49,7 +59,6 @@ def calc_middle(params):
 def custom_border(params):
 	border_one = ["BORDER", params[0]]
 	border_two = ["BORDER", params[1]]
-	print(border_one, border_two)
 	return [border_one, border_two]
 
 

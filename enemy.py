@@ -32,6 +32,8 @@ class Enemy:
 		self.startx = self.x
 		self.starty = self.y	
 
+	def get_circle(self, rect):
+
 	def draw(self, dt):
 		# keeps track of how far to move in a direction
 		diffx = abs(self.x - self.startx)

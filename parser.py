@@ -1,5 +1,5 @@
 import functions
-attrib_declaration_keywords = ["loc"]
+attrib_declaration_keywords = ["loc", "mov"]
 attribute_objects = ["CHECKPOINT", "ENEMY", "BORDER", "RECT"]
 
 def remove_comments(line):
@@ -19,6 +19,7 @@ def string_to_int_tuple(string):
 	string = string.replace('(', "")
 	string = string.replace(')', "")
 	string = string.split(',')
+
 	return tuple([eval(x) for x in string])
 
 
@@ -92,7 +93,9 @@ def check_functions(attributes, current_object, line):
 					
 def parse_block(block):
 	#contains the variables in our level file
-	variables = {}
+	variables = {
+		"PWIDTH" : 20,
+	}
 	#removes the comments 
 	lines = block.split("\n")
 	attributes = []

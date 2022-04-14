@@ -57,6 +57,7 @@ class Level:
 		self.borders = []
 		self.rectangles = []
 		self.level = level
+		self.hasCollided = False
 
 	def parse_data(self, attributes):	
 		#create all our object and add them to level arrays
