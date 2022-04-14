@@ -9,7 +9,7 @@ class Enemy:
         
         self.x = location[0]
         self.y = location[1]
-        self.radius = 12
+        self.radius = 10
         self.speed = 75
         self.color = (0,0,255)
         self.movement = movement
