@@ -30,7 +30,7 @@ class Enemy:
 
         self.startx = self.x
         self.starty = self.y
-
+        self.firstFrame = True
     def get_center(self):
         return (self.x, self.y)
 
@@ -38,6 +38,14 @@ class Enemy:
         return self.radius
 
     def draw(self, dt):
+        # the dt from the first frame causes the 
+        # enemy to be teleported to the wrong spot 
+        # because the delta time is so large
+        # so we just skip the first frame instead
+        if self.firstFrame:
+            self.firstFrame = False
+            return
+
         # keeps track of how far to move in a direction
         diffx = abs(self.x - self.startx)
         diffy = abs(self.y - self.starty)
