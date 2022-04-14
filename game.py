@@ -17,7 +17,8 @@ class Game:
         pygame.font.init()
         self.gameFont = pygame.font.SysFont("Arial", 45)
 
-
+    # draws the black bars with the level and the death count on the top and bottom of the screen
+    # I know hud isn't the proper term but I didn't know what else to call it
     def draw_hud(self):
         # draws black rectangle at top of screen
          pygame.draw.rect(self.screen, (0,0,0), (0,0,self.width, 50))
@@ -47,6 +48,10 @@ class Game:
         self.player.collide_enemy(self.currentLevel.get_enemies())
         self.deaths = self.player.get_deaths()
 
+        if self.currentLevel.newLevel:
+            self.level += 1
+            self.newLevel = True
+
 
 class Level:
     def __init__(self, screen, level):
@@ -59,6 +64,7 @@ class Level:
         self.borders = []
         self.rectangles = []
         self.level = level
+        self.newLevel = False
 
     def parse_data(self, attributes):	
         #create all our object and add them to level arrays
@@ -66,7 +72,7 @@ class Level:
             if len(obj) < 1:
                 continue
             if obj[0] == "CHECKPOINT":
-                checkpoint = Checkpoint(self.screen, obj[1])
+                checkpoint = Checkpoint(self.screen, obj[1], obj[2])
                 self.checkpoints.append(checkpoint)
             elif obj[0] == "BORDER":
                 border= Border(self.screen, obj[1])
@@ -100,6 +106,8 @@ class Level:
             checkpoint.draw()
             # sets the players spawn to the checkpoint
             if checkpoint.get_rect().colliderect(player_rect):
+                if checkpoint.last_checkpoint():
+                   self.newLevel = True 
                 spawn = checkpoint.get_spawn_loc()
                 player.set_spawn_point(spawn[0], spawn[1])
 
