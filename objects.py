@@ -11,13 +11,13 @@ class Checkpoint:
     def last_checkpoint(self):
         return self.is_end
 
-    def draw(self):	
+    def draw(self):
         pygame.draw.rect(self.screen, self.color, self.location)
 
 
     def get_rect(self):
         return pygame.Rect(self.location)
-    
+
     # returns the spawn location for the player in the middle of
     # the checkpoint
     def get_spawn_loc(self):
@@ -38,11 +38,11 @@ class Border:
     def get_rect(self):
         return pygame.Rect(self.location)
 
-# actual background the player will be moving on 
+# actual background the player will be moving on
 class Rectangle:
     def __init__(self, screen, location):
         self.screen = screen
-        self.location = location 
+        self.location = location
         self.color = (255, 255, 255)
 
     def draw(self):
@@ -53,15 +53,16 @@ class Coin:
     def __init__(self, screen, location):
         self.screen = screen
         self.location = (location[0], location[1], 8, 8)
-        self.color = (155, 135, 12) 
-       
+        self.color = (155, 135, 12)
+
         # value if the coin has been collected
         self.isCollected = False
+        # probably not best use of memory
+        self.sound = pygame.mixer.Sound("assets/coin-sound.mp3")
 
-        
     def draw(self):
         if self.isCollected:
-            return 
+            return
         x = self.location[0]
         y = self.location[1]
         w = self.location[2]
@@ -75,9 +76,10 @@ class Coin:
 
     def collect_player(self, player):
         if self.isCollected:
-            return
+            return False
 
         if player.colliderect(pygame.Rect(self.location)):
+            pygame.mixer.Sound.play(self.sound)
             self.isCollected = True
-    
-    
+            return True
+        return False
