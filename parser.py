@@ -1,6 +1,6 @@
 import functions
 attrib_declaration_keywords = ["loc", "mov", "end"]
-attribute_objects = ["CHECKPOINT", "ENEMY", "BORDER", "RECT"]
+attribute_objects = ["CHECKPOINT", "ENEMY", "BORDER", "RECT", "COIN"]
 
 def remove_comments(line):
 	#remove comments tabs and spaces
@@ -94,10 +94,13 @@ def check_functions(attributes, current_object, line):
 def parse_block(block):
 	#contains the variables in our level file
 	variables = {
-		"PWIDTH" : 20,
-        "ERADIUS" : 12,
+		"PWIDTH" : 20, #player width
+        "ERADIUS" : 10, #enemy radius
         "TRUE": 1,
         "FALSE": 0,
+        "SWIDTH": 800, # screen width
+        "SHEIGHT": 800, # screen height
+        "BWIDTH": 5, # border width
 	}
 	#removes the comments 
 	lines = block.split("\n")
