@@ -18,7 +18,9 @@ class Checkpoint:
 
     def get_rect(self):
         return pygame.Rect(self.location)
-
+    
+    # returns the spawn location for the player in the middle of
+    # the checkpoint
     def get_spawn_loc(self):
         x,y,w,h = self.location
         return (x + w / 2 - 20, y + h / 2 - 20)
@@ -46,3 +48,29 @@ class Rectangle:
 
     def draw(self):
         pygame.draw.rect(self.screen, self.color, self.location)
+
+# coins they are going to be rects for us
+class Coin:
+    def __init__(self, scree, location):
+        self.screen = screen
+        self.location = (location[0], location[1], 8, 8)
+        self.color = (255, 255, 0) #yellow
+       
+        # value if the coin has been collected
+        self.isCollected = False
+
+        
+    def draw(self):
+        if self.isCollected:
+            return 
+        pygame.draw.rect(self.screen, self.color, self.location)
+
+
+    def collect_player(self, player):
+        if self.isCollected:
+            return
+
+        if player.colliderect(pygame.Rect(self.location)):
+            self.isCollected = True
+    
+
