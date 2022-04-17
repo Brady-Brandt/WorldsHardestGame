@@ -1,6 +1,5 @@
 import pygame
 
-
 class Checkpoint:
     # takes in the location and boolean if it is the finish of the level
     def __init__(self, screen, location, is_end):
@@ -51,10 +50,10 @@ class Rectangle:
 
 # coins they are going to be rects for us
 class Coin:
-    def __init__(self, scree, location):
+    def __init__(self, screen, location):
         self.screen = screen
         self.location = (location[0], location[1], 8, 8)
-        self.color = (255, 255, 0) #yellow
+        self.color = (155, 135, 12) 
        
         # value if the coin has been collected
         self.isCollected = False
@@ -63,6 +62,14 @@ class Coin:
     def draw(self):
         if self.isCollected:
             return 
+        x = self.location[0]
+        y = self.location[1]
+        w = self.location[2]
+        #draw border around coin
+        pygame.draw.line(self.screen, (0,0,0), (x,y), (x+w,y))
+        pygame.draw.line(self.screen, (0,0,0), (x,y), (x,y+w))
+        pygame.draw.line(self.screen, (0,0,0), (x+w,y), (x+w,y+w))
+        pygame.draw.line(self.screen, (0,0,0), (x,y+w), (x+w,y+w))
         pygame.draw.rect(self.screen, self.color, self.location)
 
 
@@ -73,4 +80,4 @@ class Coin:
         if player.colliderect(pygame.Rect(self.location)):
             self.isCollected = True
     
-
+    
