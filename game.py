@@ -1,9 +1,6 @@
 import pygame
-import parser
-from enemy import Enemy
-from objects import Rectangle, Border, Checkpoint
 from button import Button
-
+from level import Level
 
 class Game:
     def __init__(self, screen, dims, player):
@@ -161,79 +158,12 @@ class Game:
         if self.homeScreen:
             self.draw_homescreen()
             return
+
         self.start_level()
         self.draw_screen(dt) 
         self.player.move(dt, self.currentLevel.get_borders())
-        self.player.collide_enemy(self.currentLevel.get_enemies())
-        self.pause_game() 
+        if self.player.collide_enemy(self.currentLevel.get_enemies()):
+            self.currentLevel.reset_coins()
 
 
-class Level:
-    def __init__(self, screen, level):
-        self.screen = screen
-        self.hasLoaded = False		
-        self.attributes = ["CHECKPOINT", "ENEMY", "BORDER", "RECT"]
-        #these lists hold all of the objects in the current level
-        self.checkpoints = []
-        self.enemies = []
-        self.borders = []
-        self.rectangles = []
-        self.level = level
-        self.levelComplete = False
 
-    def parse_data(self, attributes):	
-        #create all our object and add them to level arrays
-        for obj in attributes:
-            if len(obj) < 1:
-                continue
-            if obj[0] == "CHECKPOINT":
-                checkpoint = Checkpoint(self.screen, obj[1], obj[2])
-                self.checkpoints.append(checkpoint)
-            elif obj[0] == "BORDER":
-                border= Border(self.screen, obj[1])
-                self.borders.append(border)
-            elif obj[0] == "RECT":
-                rect = Rectangle(self.screen, obj[1])
-                self.rectangles.append(rect)
-            elif obj[0] == "ENEMY":
-                enemy = Enemy(self.screen, obj[1], obj[2])
-                self.enemies.append(enemy)
-
-
-    def load_level(self):
-        f = open("levels/level" + str(self.level) + ".txt", "r")
-        data = f.read()
-
-        blocks = data.split("END\n\n")
-        for block in blocks:
-            attributes = parser.parse_block(block)
-            self.parse_data(attributes)
-        self.hasLoaded = True
-        f.close()
-
-    def draw_level(self, player, dt):
-        player_rect = player.get_rect()
-        for rectangle in self.rectangles:
-            rectangle.draw()
-        for border in self.borders:
-            border.draw()	
-        for checkpoint in self.checkpoints:
-            checkpoint.draw()
-            # sets the players spawn to the checkpoint
-            if checkpoint.get_rect().colliderect(player_rect):
-
-                # if it is the last checkpoint we want to end the level
-                if checkpoint.last_checkpoint():
-                   self.levelComplete = True 
-                spawn = checkpoint.get_spawn_loc()
-                player.set_spawn_point(spawn[0], spawn[1])
-
-
-        for enemy in self.enemies:
-            enemy.draw(dt)
-
-    def get_borders(self):
-        return self.borders
-
-    def get_enemies(self):
-        return self.enemies
