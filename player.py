@@ -73,35 +73,35 @@ class Player:
             center = enemy.get_center()
             radius = enemy.get_radius()
 
-            if self.distance(p_rect.center, center) <= radius + (self.pWidth / 2):
+            if self.distance(p_rect.center, center) < radius + (self.pWidth / 2):
                 self.spawn()
                 self.deaths += 1
                 return True
 
-            if self.distance(p_rect.topleft, center) <= radius:
+            if self.distance(p_rect.topleft, center) < radius:
                 self.spawn()
                 self.deaths += 1
                 return True
 
-            if self.distance(p_rect.topright, center) <= radius:
+            if self.distance(p_rect.topright, center) < radius:
                 self.spawn()
                 self.deaths += 1
                 return True
 
-            if self.distance(p_rect.bottomright, center) <= radius:
+            if self.distance(p_rect.bottomright, center) < radius:
                 self.spawn()
                 self.deaths += 1
                 return True
 
-            if self.distance(p_rect.bottomleft, center) <= radius:
+            if self.distance(p_rect.bottomleft, center) < radius:
                 self.spawn()
                 self.deaths += 1
                 return True
 
+        return False
 
 
-
-    def move(self, dt, borders, enemies):
+    def move(self, dt, borders):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             self.x -= self.speed * dt
