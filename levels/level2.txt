@@ -18,10 +18,10 @@ CHECKPOINT
 
 	#tiny rectangle before main area
 	SUB
-		small_x=x+w
+		small_x=x+w+5
 		RECT
 			loc=(small_x,y+55,30,30)
-			CALC_BORDERS((small_x,y+55,30,30), (2,4))
+			CALC_BORDERS((small_x,y+55,30,30), (2,4), 1)
 
 	# big rectangle
 	SUB
@@ -131,25 +131,36 @@ ENEMY
 END
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+COIN
+	x=SWIDTH/2-8
+	y=SHEIGHT/2-8
+	loc=(x,y)
+	
+	distance_between=20
+	SUB
+		COIN
+			loc=(x-distance_between, y)
+	SUB	
+		COIN
+			loc=(x-distance_between*2, y)
+	SUB
+		COIN
+			loc=(x,y-distance_between)
+	SUB
+		COIN
+			loc=(x-distance_between, y-distance_between)
+	SUB
+		COIN
+			loc=(x-distance_between*2, y-distance_between)
+	SUB
+		COIN
+			loc=(x,y-distance_between*2)
+	SUB
+		COIN
+			loc=(x-distance_between*2, y-distance_between*2)
+	SUB
+		COIN
+			loc=(x-distance_between, y-distance_between*2)
+END
 
 

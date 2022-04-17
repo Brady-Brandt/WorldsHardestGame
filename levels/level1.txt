@@ -33,7 +33,7 @@ CHECKPOINT
 
 		SUB
 			BORDER
-				loc=(x+w+PWIDTH*2,rect_y+160,big_rect_width,5)	
+				loc=(x+w+PWIDTH*2,rect_y+160,big_rect_width+5,5)	
 			
 		SUB
 			movement=big_rect_width-ERADIUS
@@ -43,23 +43,23 @@ CHECKPOINT
 			y_start=y+60
 			ENEMY
 				loc=(start_one,y_start)
-				mov=((4,0,movement),(-4,0,movement))
+				mov=((3,0,movement),(-3,0,movement))
 		SUB
 			ENEMY
 				loc=(start_two,y_start+distance_between)
-				mov=((-4,0,movement),(4,0,movement))
+				mov=((-3,0,movement),(3,0,movement))
 		SUB
 			ENEMY
 				loc=(start_one,y_start+2*distance_between)
-				mov=((4,0,movement), (-4,0,movement))
+				mov=((3,0,movement), (-3,0,movement))
 		SUB
 			ENEMY
 				loc=(start_two, y_start+3*distance_between)
-				mov=((-4,0,movement), (4,0,movement))
+				mov=((-3,0,movement), (3,0,movement))
 		SUB
 			ENEMY
 				loc=(start_one, y_start+4*distance_between)
-				mov=((4,0,movement), (-4,0,movement))
+				mov=((3,0,movement), (-3,0,movement))
 	SUB	
 		RECT
 			smallx=x+big_rect_width+w+PWIDTH
