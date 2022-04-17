@@ -20,7 +20,7 @@ class Game:
         pygame.font.init()
 
         self.title = pygame.image.load("assets/game-title.png")
-        self.gameFont = pygame.font.SysFont("Arial", 45)
+        self.gameFont = pygame.font.SysFont("Arial", 40)
         self.titleFont = pygame.font.SysFont("Arial", 35)
         self.blackTitle = pygame.font.SysFont("Arial", 30, bold=True)
         self.optionFont = pygame.font.SysFont("Palatino", 45,bold=True)
@@ -90,10 +90,12 @@ class Game:
         # start the game
         if start_clicked:
             self.homeScreen = False
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW) 
 
         # loads up a previous game
         # the level from the previous game is stored in the file below
         if load_clicked:
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW) 
             with open("saved/level.txt") as f:
                 self.level = int(f.readline())
                 self.homeScreen = False
@@ -109,11 +111,11 @@ class Game:
          pygame.draw.rect(self.screen, self.black, (0,self.height-50,self.width,50))
 
          # draws the level text
-         level_text = self.gameFont.render("Level: " + str(self.level),False, (255,255,255))		
+         level_text = self.gameFont.render("LEVEL: " + str(self.level),False, (255,255,255))		
          self.screen.blit(level_text, (5,0))
 
          # draws the fails text
-         fail_text = self.gameFont.render("Fails: " + str(self.deaths), False, (255,255,255))
+         fail_text = self.gameFont.render("FAILS: " + str(self.deaths), False, (255,255,255))
          self.screen.blit(fail_text, (self.width - 200, 0))
 
          #fps_text = self.gameFont.render("FPS: " + str(int(1/dt)), False, (255, 255, 255))
@@ -150,10 +152,19 @@ class Game:
         if self.currentLevel.levelComplete:
             self.level += 1
             self.newLevel = True
-    
+
+    def draw_coin_count(self): 
+        current, max_count = self.currentLevel.get_coin_count()
+        # dont draw count if there are no coins in the level
+        if max_count == 0:
+            return
+        coin_count_text = self.gameFont.render("COINS: " + str(current) + "/" + str(max_count), False, (255,255,255))
+        self.screen.blit(coin_count_text, (275, 0))
+
     def pause_game(self): 
         while self.pauseGame:
             pass
+
     def play_game(self, dt):
         if self.homeScreen:
             self.draw_homescreen()
@@ -164,6 +175,5 @@ class Game:
         self.player.move(dt, self.currentLevel.get_borders())
         if self.player.collide_enemy(self.currentLevel.get_enemies()):
             self.currentLevel.reset_coins()
-
-
+        self.draw_coin_count()
 

@@ -15,6 +15,8 @@ class Level:
         self.borders = []
         self.rectangles = []
         self.coins = []
+        self.coinCount = 0
+        self.maxCoins = 0
         self.level = level
         self.levelComplete = False
 
@@ -40,11 +42,12 @@ class Level:
                 coin = Coin(self.screen, obj[1])
                 self.coins.append(coin)
 
+        self.maxCoins = len(self.coins)
     def load_level(self):
         f = open("levels/level" + str(self.level) + ".txt", "r")
         data = f.read()
 
-        blocks = data.split("END\n\n")
+        blocks = data.split("END\n")
         for block in blocks:
             attributes = parser.parse_block(block)
             self.parse_data(attributes)
@@ -63,12 +66,12 @@ class Level:
             if checkpoint.get_rect().colliderect(player_rect):
 
                 # remove any coins collected from the list
-                for index, coin in enumerate(self.coins):
+                for coin in self.coins:
                     if coin.isCollected:
-                       self.coins.remove(index) 
+                       self.coins.remove(coin) 
 
                 # if it is the last checkpoint we want to end the level
-                if checkpoint.last_checkpoint():
+                if checkpoint.last_checkpoint() and len(self.coins) == 0:
                    self.levelComplete = True 
                 spawn = checkpoint.get_spawn_loc()
                 player.set_spawn_point(spawn[0], spawn[1])
@@ -79,7 +82,8 @@ class Level:
 
         for coin in self.coins:
             coin.draw()
-            coin.collect_player(player_rect)
+            if coin.collect_player(player_rect):
+                self.coinCount += 1
 
     def get_borders(self):
         return self.borders
@@ -89,4 +93,9 @@ class Level:
 
     def reset_coins(self):
         for coin in self.coins:
+            if coin.isCollected:
+                self.coinCount -= 1
             coin.isCollected = False
+
+    def get_coin_count(self):
+        return (self.coinCount, self.maxCoins)
