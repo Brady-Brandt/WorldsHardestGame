@@ -1,33 +1,21 @@
 import pygame
 
 class Enemy:
-    # takes in starting location and array of 3d tuples
+    color = (0,0,255)
+    radius = 10
+    # takes in starting location and list of 3d tuples
     # tuple specifies the x direction to move and the y
-    # final final indicates how many times to move in that direction
-    def __init__(self, screen, location, movement):
-        self.screen = screen
-        
+    # last one defines how far to move in that direction 
+    def __init__(self, location, movement, speed=215, sync=True):
         self.x = location[0]
         self.y = location[1]
-        self.radius = 10
-        self.speed = 88
-        self.color = (0,0,255)
-        self.movement = movement
-        
-        # parse our movement tuple into an array of 3d vectors
-        movement = []
-        current = []
-        for move in self.movement:
-            current.append(move)
-            if len(current) == 3:
-                movement.append(current)
-                current = []
-        self.movement = movement
-
-
+        self.speed = speed
+        self.movement = movement      
         # index into movement array
         self.index = 0
+        self.total_moved = 0 
 
+        self.sync = sync
         self.startx = self.x
         self.starty = self.y
 
@@ -35,43 +23,72 @@ class Enemy:
         return (self.x, self.y)
 
     def get_radius(self):
-        return self.radius
+        return Enemy.radius
 
     # returns the normalized sign of a value
-    def get_dirrection(self, value):
-        if value < 0:
-            return value / value * -1
-        return value / value
+    def get_dirrection(self,value):
+        if value > 0:
+            return 1
+        elif value < 0:
+            return -1
+        return 0
 
-    def draw(self, dt):
+    def update_movement(self):
+        self.total_moved = 0
+        self.index += 1
+        if self.index == len(self.movement):
+            if self.sync:
+                self.x = self.startx
+                self.y = self.starty
+            self.index = 0
 
-        # keeps track of how far to move in a direction
-        diffx = abs(self.x - self.startx)
-        diffy = abs(self.y - self.starty)
+    # so we don't lose movement when the enemy switches direction 
+    def overshoot(self, val): 
+        self.update_movement()
+        amount_to_move = self.movement[self.index][2]
+        if amount_to_move == 0:
+            self.update_movement()
+            amount_to_move = self.movement[self.index][2]
 
+
+        x = self.movement[self.index][0]
+        y = self.movement[self.index][1]
+
+        self.x += self.get_dirrection(x) * val
+        self.y += self.get_dirrection(y) * val
+        self.total_moved += val
+        
+
+
+    def draw(self, screen, dt):
         # the amount to move in one direction
         amount_to_move = self.movement[self.index][2]
+        if amount_to_move == 0:
+            self.update_movement()
+            pygame.draw.circle(screen, Enemy.color, (self.x, self.y), Enemy.radius)
+            return
 
-        if diffx >= amount_to_move:
-            self.index += 1
-            if self.index == len(self.movement):
-                self.index = 0
+        x = self.movement[self.index][0]
+        y = self.movement[self.index][1]
+        self.x += self.speed * self.get_dirrection(x) * dt
+        self.y += self.speed * self.get_dirrection(y) * dt
 
-            # make sure the bot doesn't end up to far of path if dt is too large
-            dirrection = self.get_dirrection(self.movement[self.index][0])  
-            self.x = self.startx + dirrection * amount_to_move * -1 
-            self.startx = self.x
+        self.total_moved += self.speed * dt
 
-        if diffy >= amount_to_move:
-            self.index += 1
-            if self.index == len(self.movement):
-                self.index = 0
-
-            dirrection = self.get_dirrection(self.movement[self.index][1])
-            self.y = self.starty + dirrection * amount_to_move * -1
-            self.starty = self.y
-
-        self.x += self.speed * self.movement[self.index][0] * dt
-        self.y += self.speed * self.movement[self.index][1] * dt
-        pygame.draw.circle(self.screen, self.color, (self.x, self.y), self.radius)
-        
+        if self.total_moved >= amount_to_move:
+            if x != 0 and y != 0:
+                overshoot = self.total_moved - amount_to_move
+                self.x -= overshoot * self.get_dirrection(x)
+                self.y -= overshoot * self.get_dirrection(y)
+                self.overshoot(overshoot)
+            elif x != 0:
+                overshoot = self.total_moved - amount_to_move
+                self.x -= overshoot * self.get_dirrection(x)
+                self.overshoot(overshoot)
+            elif y != 0:
+                overshoot = self.total_moved - amount_to_move
+                self.y -= overshoot * self.get_dirrection(y)
+                self.overshoot(overshoot)
+            
+            
+        pygame.draw.circle(screen, Enemy.color, (self.x, self.y), Enemy.radius)
