@@ -103,16 +103,16 @@ class Player:
 
     def move(self, dt, borders):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.x -= self.speed * dt
             self.stop_player(borders, "LEFT")
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.x += self.speed * dt
             self.stop_player(borders, "RIGHT")
-        if keys[pygame.K_UP]:
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
             self.y -= self.speed * dt
             self.stop_player(borders, "UP")
-        if keys[pygame.K_DOWN]:
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             self.y += self.speed * dt
             self.stop_player(borders, "DOWN")
         #keeps the player on the screen
@@ -121,7 +121,7 @@ class Player:
         elif self.x > self.width - self.pWidth:
             self.x = self.width - self.pWidth
         elif self.y > self.height - self.pWidth:
-            self.y = self.height - self.pWidth;
+            self.y = self.height - self.pWidth
         elif self.y < 0:
             self.y = 0
         self.screen.blit(self.image, (self.x, self.y))
