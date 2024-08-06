@@ -11,6 +11,8 @@ class Level:
         self.rectangles = []
         self.coins = []
         self.total_coins = total_coins
+        if self.total_coins != 0:
+            self.coin_sound = pygame.mixer.Sound("assets/coin_sound.mp3")
         self.coin_count = 0
         self.completed = False
 
@@ -42,6 +44,7 @@ class Level:
         for coin in self.coins:
             coin.draw(self.screen)
             if coin.collect_player(player_rect):
+                pygame.mixer.Sound.play(self.coin_sound)
                 self.coin_count += 1
 
     def get_borders(self):
