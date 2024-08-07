@@ -1,7 +1,24 @@
 import pygame
 from level import LEVELS, MAX_LEVEL
-from menu import MainMenu
+from menu import MainMenu, PauseMenu
+from button import Button
 
+
+def pause_cb(btn, game):
+    if game.pause_menu is None and game.main_menu is None:
+        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+        game.pause_menu = PauseMenu(game.screen)
+
+def pause_enter_cb(btn, game):
+    if game.pause_menu is None and game.main_menu is None:
+        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+        return True
+
+def pause_leave_cb(btn, game):
+    if game.pause_menu is None and game.main_menu is None:
+        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+        return False
+       
 class Game:
     def __init__(self, screen, dims, player):
         self.screen = screen 
@@ -13,7 +30,6 @@ class Game:
         self.current_level = LEVELS[0](screen)
 
         self.newLevel = True
-        self.pauseGame = False
 
         self.black = (0,0,0)
         pygame.font.init()
@@ -26,6 +42,14 @@ class Game:
         pygame.mixer.music.play(-1)
  
         self.main_menu = MainMenu(screen)
+        self.pause_menu = None
+        self.pause_btn = Button(screen,0,self.height-50,
+                                "Pause",
+                                self.gameFont,
+                                fg=(255,255,255),
+                                click=pause_cb,
+                                m_enter=pause_enter_cb,
+                                m_leave=pause_leave_cb)
  
     # draws the black bars with the level and the death count on the top and bottom of the screen
     def draw_hud(self):
@@ -39,18 +63,11 @@ class Game:
         self.screen.blit(level_text, (5,0))
 
         # draws the fails text
+        self.deaths = self.player.get_deaths()
         fail_text = self.gameFont.render("FAILS: " + str(self.deaths), False, (255,255,255))
         self.screen.blit(fail_text, (self.width - 200, 0))
- 
 
-    # draws everything for the current level
-    def draw_screen(self, dt):
-        # update the death count for the hud
-        self.deaths = self.player.get_deaths()
-        self.draw_hud()
-        self.current_level.draw_level(self.player, dt)
-
-
+       
     def start_level(self):
         # creation of new level
         # create and load the level
@@ -58,14 +75,16 @@ class Game:
         # spawn in the player
         if self.newLevel:
             if self.level > 0 and self.level < MAX_LEVEL + 1:
-                self.current_level = LEVELS[self.level - 1](screen=self.screen) 
+                self.current_level = LEVELS[self.level - 1](screen=self.screen)
                 spawn = self.current_level.checkpoints[0].get_spawn_loc()
                 self.player.set_spawn_point(spawn[0], spawn[1])
                 self.player.spawn()
                 self.newLevel = False
             else:
-                self.homeScreen = True
-                return 
+                self.main_menu = MainMenu(self.screen)
+                self.level = 1
+                self.deaths = 0
+                return
 
         # check if the level has been beaten to start a new one
         if self.current_level.completed:
@@ -83,17 +102,21 @@ class Game:
         coin_count_text = self.gameFont.render(f"COINS: {current_coins} / {total_coins}", False, (255,255,255))
         self.screen.blit(coin_count_text, (275, 0))
 
-    def pause_game(self):
-        while self.pauseGame:
-            pass
-
+  
     def play_game(self, dt):
         if self.main_menu is not None:
             self.main_menu.draw()
             return
 
+        self.draw_hud()
+        self.pause_btn.draw()
+
+        if self.pause_menu is not None:
+            self.pause_menu.draw()
+            dt = 0 # dt = 0 to create an illusion that the game is paused 
+
         self.start_level()
-        self.draw_screen(dt)
+        self.current_level.draw_level(self.player, dt)
         self.player.move(dt, self.current_level.get_borders())
         if self.player.collide_enemy(self.current_level.get_enemies()):
             self.current_level.reset_coins()

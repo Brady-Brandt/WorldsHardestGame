@@ -23,12 +23,33 @@ class Button:
     def delete_button(button):
         Button.buttons.remove(button)
 
-    def __init__(self,screen,location,color, m_enter=def_enter, m_leave=def_leave, click=def_click):
-        self.screen = screen
-        self.location = location
-        self.color = color
-        self.rect = pygame.Rect(location)
+    def __init__(self,screen,x,y,
+                 text,
+                 font,
+                 fg = (0,0,0),
+                 bg = None,
+                 m_enter=def_enter,
+                 m_leave=def_leave, click=def_click):
 
+        self.screen = screen
+        self.fg = fg
+        self.bg = bg
+        self.text = text
+        self.font = font
+
+        total_width = 0
+        total_height = 0
+
+        self.surfaces = []
+
+        for line in self.text.split('\n'):
+            (w,h)= self.font.size(line)
+            total_width += w
+            total_height += h
+            self.surfaces.append(self.font.render(line, False, self.fg))
+
+
+        self.rect = pygame.Rect((x,y,total_width, total_height))
         self.mouse_enter =  m_enter
         self.mouse_leave = m_leave
         self.click = click
@@ -36,7 +57,13 @@ class Button:
         Button.add_button(self)
 
     def draw(self):
-        pygame.draw.rect(self.screen, self.color, self.rect)
+        prev_h = 0
+        if self.bg is not None:
+            pygame.draw.rect(self.screen, self.bg, self.rect)
+        for surface in self.surfaces:
+            self.screen.blit(surface, (self.rect.x, self.rect.y + prev_h))
+            prev_h += surface.get_height()
+
 
     def handle_event(self, event, arg=None):
         if event.type == pygame.MOUSEMOTION:
