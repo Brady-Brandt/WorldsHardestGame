@@ -1,6 +1,6 @@
 import pygame
-from button import Button
 from level import LEVELS, MAX_LEVEL
+from menu import MainMenu
 
 class Game:
     def __init__(self, screen, dims, player):
@@ -12,96 +12,23 @@ class Game:
         self.deaths = 0
         self.current_level = LEVELS[0](screen)
 
-        self.homeScreen = True
         self.newLevel = True
         self.pauseGame = False
 
         self.black = (0,0,0)
         pygame.font.init()
 
-        self.title = pygame.image.load("assets/game-title.png")
         self.gameFont = pygame.font.SysFont("Arial", 40)
-        self.titleFont = pygame.font.SysFont("Arial", 35)
-        self.blackTitle = pygame.font.SysFont("Arial", 30, bold=True)
-        self.optionFont = pygame.font.SysFont("Palatino", 45,bold=True)
 
         # play the background music
         pygame.mixer.init()
         pygame.mixer.music.load("assets/background-music.mp3")
         pygame.mixer.music.play(-1)
-
-
-        # create the homescreen buttons
-        #(100, 149, 237)
-        self.start_button = Button(self.screen, (125,500,200,75), (100, 149, 237))
-        self.load_button = Button(self.screen, (350,500,200,75), (100, 149, 237))
-        self.select_button = Button(self.screen, (575, 500,200,75), (100, 149, 237))
-
-    def draw_homescreen(self):
-        # black bar at top of screen
-        pygame.draw.rect(self.screen, self.black, (0,0,self.width, 50))
-        # black bar at bottom of screen
-        pygame.draw.rect(self.screen, self.black, (0,self.height-50,self.width,50))
-
-        
-        creator_text = self.titleFont.render("CREATOR: Brady",False, (255,255,255))
-        music_text = self.titleFont.render("MUSIC: Techno", False, (255,255,255))
-        self.screen.blit(creator_text, (5,0))
-        self.screen.blit(music_text, (self.width-250, 0))
-
-
-        #draws python text python3
-        python_text = self.blackTitle.render("Python 3", False, self.black)
-        self.screen.blit(self.title, (100,50)) 
-        self.screen.blit(python_text, (500, 125))
-
-        # options
-        play = self.optionFont.render("PLAY", False, (255,0,0))
-        game = self.optionFont.render("GAME", False, (255,0,0))
-        self.start_button.draw()
-        self.screen.blit(play, (135, 500))
-        self.screen.blit(game, (125, 545))
-
-
-        load = self.optionFont.render("LOAD", False, (0,0,255))
-        l_game = self.optionFont.render("GAME", False, (0,0,255))
-        self.load_button.draw()
-        self.screen.blit(load, (360, 500))
-        self.screen.blit(l_game, (350,545))
-
-        level = self.optionFont.render("LEVEL", False, (0,255,0))
-        select = self.optionFont.render("SELECT", False, (0,255,0))
-        self.select_button.draw()
-        self.screen.blit(level, (575, 500))
-        self.screen.blit(select, (575, 545)) 
-                 
-        select_hovering, select_clicked = self.select_button.is_clicked()
-        load_hovering, load_clicked = self.load_button.is_clicked()
-        start_hovering, start_clicked = self.start_button.is_clicked()           
-
-        # sets the cursor back to default if the mouse is not hovering
-        # over and of the buttons
-        if not select_hovering and not load_hovering and not start_hovering:
-            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-
-
-        # start the game
-        if start_clicked:
-            self.homeScreen = False
-            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-
-        # loads up a previous game
-        # the level from the previous game is stored in the file below
-        if load_clicked:
-            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-            with open("saved/level.txt", "r") as f:
-                self.level = int(f.readline())
-                self.homeScreen = False
-                return            
-
+ 
+        self.main_menu = MainMenu(screen)
+ 
     # draws the black bars with the level and the death count on the top and bottom of the screen
-    # I know hud isn't the proper term but I didn't know what else to call it
-    def draw_hud(self, dt):
+    def draw_hud(self):
         # draws black rectangle at top of screen
         pygame.draw.rect(self.screen, self.black, (0,0,self.width, 50))
         # draws black rectangle at bottom of screen
@@ -114,15 +41,13 @@ class Game:
         # draws the fails text
         fail_text = self.gameFont.render("FAILS: " + str(self.deaths), False, (255,255,255))
         self.screen.blit(fail_text, (self.width - 200, 0))
-
-        #fps_text = self.gameFont.render("FPS: " + str(int(1/dt)), False, (255, 255, 255))
-        #self.screen.blit(fps_text, (0, self.height - 50))
+ 
 
     # draws everything for the current level
     def draw_screen(self, dt):
         # update the death count for the hud
         self.deaths = self.player.get_deaths()
-        self.draw_hud(dt)
+        self.draw_hud()
         self.current_level.draw_level(self.player, dt)
 
 
@@ -163,8 +88,8 @@ class Game:
             pass
 
     def play_game(self, dt):
-        if self.homeScreen:
-            self.draw_homescreen()
+        if self.main_menu is not None:
+            self.main_menu.draw()
             return
 
         self.start_level()
