@@ -1,34 +1,51 @@
 import pygame
 
 
+def def_enter(btn, arg=None):
+    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+    return True
+
+def def_leave(btn, arg=None):
+    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+    return False
+
+def def_click(btn, arg=None):
+    pass
+
 class Button:
-    def __init__(self, screen, location,color):
+    buttons = []
+
+    @staticmethod
+    def add_button(button):
+        Button.buttons.append(button)
+
+    @staticmethod
+    def delete_button(button):
+        Button.buttons.remove(button)
+
+    def __init__(self,screen,location,color, m_enter=def_enter, m_leave=def_leave, click=def_click):
         self.screen = screen
         self.location = location
         self.color = color
-
         self.rect = pygame.Rect(location)
-        self.hand = pygame.cursors.Cursor(pygame.SYSTEM_CURSOR_HAND)
+
+        self.mouse_enter =  m_enter
+        self.mouse_leave = m_leave
+        self.click = click
+
+        Button.add_button(self)
 
     def draw(self):
         pygame.draw.rect(self.screen, self.color, self.rect)
 
-
-
-    # returns boolean tuple
-    # first value indicates if it is hover over a button
-    # second value indicates if it has been clicked
-    def is_clicked(self):
-        x,y = pygame.mouse.get_pos()
-
-        if x <= self.rect.right and x >= self.rect.left and y >= self.rect.top and y < self.rect.bottom:
-            # change the cursor to the hand if the mouse is over the button
-            pygame.mouse.set_cursor(self.hand)
-            buttons = pygame.mouse.get_pressed()
-            # check for right click
-            if buttons[0]:
-                return (True, True)
-            return (True, False)
-
-         
-        return (False, False)
+    def handle_event(self, event, arg=None):
+        if event.type == pygame.MOUSEMOTION:
+            pos = event.__dict__["pos"]
+            if self.rect.collidepoint(pos):
+                return self.mouse_enter(self, arg)
+            else:
+                return self.mouse_leave(self,arg)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            pos = event.__dict__["pos"]
+            if self.rect.collidepoint(pos):
+                return self.click(self,arg)

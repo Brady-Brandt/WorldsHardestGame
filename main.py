@@ -1,4 +1,5 @@
 import pygame
+from button import Button
 from player import Player
 from game import Game
 
@@ -29,5 +30,9 @@ if __name__ == "__main__":
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 quit = True
+            if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEMOTION:
+                for btn in Button.buttons:
+                    if btn.handle_event(event, game):
+                        break
 
         pygame.display.flip()
