@@ -1,5 +1,7 @@
 import pygame
+import os 
 from enemy import Enemy
+
 
 
 class Player:
@@ -7,7 +9,9 @@ class Player:
         self.screen = screen
         self.width = screen_dim[0]
         self.height = screen_dim[1]
-        self.image = pygame.image.load("assets/box.png")
+        script_dir = os.path.dirname(__file__)
+        file_path = os.path.join(script_dir, 'assets', 'box.png')
+        self.image = pygame.image.load(file_path)
         self.x = 250
         self.y = 250
         self.speed = 100

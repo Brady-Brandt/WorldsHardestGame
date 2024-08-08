@@ -1,3 +1,4 @@
+import os
 from objects import *
 from enemy import Enemy
 
@@ -12,7 +13,9 @@ class Level:
         self.coins = []
         self.total_coins = total_coins
         if self.total_coins != 0:
-            self.coin_sound = pygame.mixer.Sound("assets/coin_sound.mp3")
+            script_dir = os.path.dirname(__file__)
+            file_path = os.path.join(script_dir, 'assets', 'coin_sound.mp3')
+            self.coin_sound = pygame.mixer.Sound(file_path)
         self.coin_count = 0
         self.completed = False
 

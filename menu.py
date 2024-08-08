@@ -1,4 +1,5 @@
 import pygame
+import os
 from button import Button
 
 def start_game_cb(btn, game):
@@ -9,7 +10,9 @@ def start_game_cb(btn, game):
 
 class MainMenu:
     def __init__(self, screen) -> None:
-        self.title = pygame.image.load("assets/game-title.png")
+        script_dir = os.path.dirname(__file__)
+        file_path = os.path.join(script_dir, 'assets', 'game-title.png')
+        self.title = pygame.image.load(file_path)
         self.screen = screen       
         self.title_font = pygame.font.SysFont("Arial", 35)
         self.black_title = pygame.font.SysFont("Arial", 30, bold=True)

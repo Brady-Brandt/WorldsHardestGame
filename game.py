@@ -1,4 +1,5 @@
 import pygame
+import os
 from level import LEVELS, MAX_LEVEL
 from menu import MainMenu, PauseMenu
 from button import Button
@@ -37,8 +38,10 @@ class Game:
         self.gameFont = pygame.font.SysFont("Arial", 40)
 
         # play the background music
+        script_dir = os.path.dirname(__file__)
+        file_path = os.path.join(script_dir, 'assets', 'background-music.mp3')
         pygame.mixer.init()
-        pygame.mixer.music.load("assets/background-music.mp3")
+        pygame.mixer.music.load(file_path)
         pygame.mixer.music.play(-1)
  
         self.main_menu = MainMenu(screen)
