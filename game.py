@@ -3,7 +3,7 @@ import os
 from level import LEVELS, MAX_LEVEL
 from menu import MainMenu, PauseMenu
 from button import Button
-from timer import * 
+from timer import *
 
 
 def pause_cb(btn, game):
@@ -32,14 +32,14 @@ class Game:
         self.deaths = 0
         self.current_level = LEVELS[0](screen)
 
-        self.newLevel = True
+        self.new_level = True
 
         self.black = (0,0,0)
         pygame.font.init()
 
         self.timer = Timer(screen)
 
-        self.gameFont = pygame.font.SysFont("Arial", 40)
+        self.font = pygame.font.SysFont("Arial", 40)
 
         # play the background music
         script_dir = os.path.dirname(__file__)
@@ -55,7 +55,7 @@ class Game:
         self.pause_menu = None
         self.pause_btn = Button(screen,0,self.height-50,
                                 "Pause",
-                                self.gameFont,
+                                self.font,
                                 fg=(255,255,255),
                                 click=pause_cb,
                                 m_enter=pause_enter_cb,
@@ -71,13 +71,19 @@ class Game:
         self.timer.draw()
 
         # draws the level text
-        level_text = self.gameFont.render("LEVEL: " + str(self.level),False, (255,255,255))		
+        level_text = self.font.render("LEVEL: " + str(self.level),False, (255,255,255))
         self.screen.blit(level_text, (5,0))
 
         # draws the fails text
         self.deaths = self.player.get_deaths()
-        fail_text = self.gameFont.render("FAILS: " + str(self.deaths), False, (255,255,255))
-        self.screen.blit(fail_text, (self.width - 200, 0))
+        if self.deaths > 99_999:
+            self.deaths = 0
+            self.player.deaths = 0
+
+        fail_str = "FAILS: " + str(self.deaths)
+        fail_text = self.font.render(fail_str, False, (255,255,255))
+        (fw, _) = self.font.size(fail_str)
+        self.screen.blit(fail_text, (self.width - fw - 5, 0))
 
 
     def save(self):
@@ -112,6 +118,7 @@ class Game:
             return
 
     def new_game(self):
+        self.new_level = True
         self.level = 1
         self.deaths = 0
         self.player.deaths = 0
@@ -123,13 +130,13 @@ class Game:
         # create and load the level
         # set the player spawnpoint to the first checkpoint
         # spawn in the player
-        if self.newLevel:
+        if self.new_level:
             if self.level > 0 and self.level < MAX_LEVEL + 1:
                 self.current_level = LEVELS[self.level - 1](screen=self.screen)
                 spawn = self.current_level.checkpoints[0].get_spawn_loc()
                 self.player.set_spawn_point(spawn[0], spawn[1])
                 self.player.spawn()
-                self.newLevel = False
+                self.new_level = False
             else:
                 self.main_menu = MainMenu(self.screen)
                 self.level = 1
@@ -140,7 +147,7 @@ class Game:
         if self.current_level.completed:
             self.level += 1
             self.save()
-            self.newLevel = True
+            self.new_level = True
 
     def draw_coin_count(self):
         total_coins = self.current_level.total_coins
@@ -150,7 +157,7 @@ class Game:
         if total_coins == 0:
             return
 
-        coin_count_text = self.gameFont.render(f"COINS: {current_coins} / {total_coins}", False, (255,255,255))
+        coin_count_text = self.font.render(f"COINS: {current_coins} / {total_coins}", False, (255,255,255))
         self.screen.blit(coin_count_text, (275, 0))
 
   
