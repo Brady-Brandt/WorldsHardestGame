@@ -44,7 +44,7 @@ class Button:
 
         for line in self.text.split('\n'):
             (w,h)= self.font.size(line)
-            total_width += w
+            total_width = max(w, total_width)
             total_height += h
             self.surfaces.append(self.font.render(line, False, self.fg))
 
