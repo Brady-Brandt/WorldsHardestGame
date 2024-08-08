@@ -5,6 +5,7 @@ from button import Button
 def start_game_cb(btn, game):
     game.main_menu.delete_buttons()
     game.main_menu = None
+    game.timer.start()
     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
     return True
 
@@ -70,6 +71,7 @@ def main_menu_cb(btn, game):
 
 def resume_cb(btn, game):
     game.pause_menu = None
+    game.timer.unpause()
     return True
 
 

@@ -3,12 +3,14 @@ import os
 from level import LEVELS, MAX_LEVEL
 from menu import MainMenu, PauseMenu
 from button import Button
+from timer import * 
 
 
 def pause_cb(btn, game):
     if game.pause_menu is None and game.main_menu is None:
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         game.pause_menu = PauseMenu(game.screen)
+        game.timer.pause()
 
 def pause_enter_cb(btn, game):
     if game.pause_menu is None and game.main_menu is None:
@@ -35,6 +37,8 @@ class Game:
         self.black = (0,0,0)
         pygame.font.init()
 
+        self.timer = Timer(screen)
+
         self.gameFont = pygame.font.SysFont("Arial", 40)
 
         # play the background music
@@ -60,6 +64,8 @@ class Game:
         pygame.draw.rect(self.screen, self.black, (0,0,self.width, 50))
         # draws black rectangle at bottom of screen
         pygame.draw.rect(self.screen, self.black, (0,self.height-50,self.width,50))
+
+        self.timer.draw()
 
         # draws the level text
         level_text = self.gameFont.render("LEVEL: " + str(self.level),False, (255,255,255))		
@@ -111,6 +117,7 @@ class Game:
             self.main_menu.draw()
             return
 
+        self.timer.update()
         self.draw_hud()
         self.pause_btn.draw()
 
