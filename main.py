@@ -13,6 +13,10 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode(SCREEN_DIM)
     pygame.display.set_caption("World's Hardest Game")
 
+    # Without this if you move the window before pygame 
+    # fully inits, the event handler won't work for some reason 
+    pygame.event.wait()
+
     player = Player(screen, SCREEN_DIM)
     game = Game(screen, SCREEN_DIM, player) 
     quit = False
@@ -29,6 +33,7 @@ if __name__ == "__main__":
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                game.save()
                 quit = True
             if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEMOTION:
                 for btn in Button.buttons:

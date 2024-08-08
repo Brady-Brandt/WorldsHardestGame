@@ -47,6 +47,9 @@ class Game:
         pygame.mixer.init()
         pygame.mixer.music.load(file_path)
         pygame.mixer.music.play(-1)
+
+
+        self.save_file_path = os.path.join(script_dir, 'save.txt')
  
         self.main_menu = MainMenu(screen)
         self.pause_menu = None
@@ -76,7 +79,45 @@ class Game:
         fail_text = self.gameFont.render("FAILS: " + str(self.deaths), False, (255,255,255))
         self.screen.blit(fail_text, (self.width - 200, 0))
 
-       
+
+    def save(self):
+        output = f"{self.level},{self.deaths},{self.timer.ms}"
+        with open(self.save_file_path, "w") as f:
+            f.write("This is a save file DO NOT EDIT\n")
+            f.write(output)
+
+
+
+    def load_level(self):
+        try:
+            with open(self.save_file_path, "r") as f:
+                lines = f.readlines()
+                if len(lines) < 2:
+                    return
+                line = lines[1].split(',')
+                if len(line) != 3:
+                    return
+                level = int(line[0])
+                deaths = int(line[1])
+                ms = int(line[2])
+
+                if deaths < 0 or ms < 0:
+                    return
+
+                self.level = level
+                self.deaths = deaths
+                self.player.deaths = deaths
+                self.timer.ms = ms
+        except Exception:
+            return
+
+    def new_game(self):
+        self.level = 1
+        self.deaths = 0
+        self.player.deaths = 0
+        self.timer.ms = 0
+
+
     def start_level(self):
         # creation of new level
         # create and load the level
@@ -98,6 +139,7 @@ class Game:
         # check if the level has been beaten to start a new one
         if self.current_level.completed:
             self.level += 1
+            self.save()
             self.newLevel = True
 
     def draw_coin_count(self):

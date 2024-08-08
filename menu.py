@@ -6,8 +6,20 @@ def start_game_cb(btn, game):
     game.main_menu.delete_buttons()
     game.main_menu = None
     game.timer.start()
+    game.new_game()
     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
     return True
+
+
+
+def load_level_cb(btn, game):
+    game.main_menu.delete_buttons()
+    game.main_menu = None
+    game.timer.start()
+    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+    game.load_level()
+    return True
+
 
 class MainMenu:
     def __init__(self, screen) -> None:
@@ -26,6 +38,7 @@ class MainMenu:
         self.load_button = Button(self.screen, 350,500,
                                   "LOAD\nGAME", 
                                   self.opt_font,
+                                  click=load_level_cb,
                                   fg=(0,0,255))
 
         self.select_button = Button(self.screen, 575,500, "LEVEL\nSELECT",
