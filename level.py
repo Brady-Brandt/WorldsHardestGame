@@ -19,7 +19,7 @@ class Level:
         self.coin_count = 0
         self.completed = False
 
-    def draw_level(self, player, dt):
+    def draw_level(self, player, dt, is_muted):
         player_rect = player.get_rect()
         for rectangle in self.rectangles:
             rectangle.draw(self.screen)
@@ -47,7 +47,8 @@ class Level:
         for coin in self.coins:
             coin.draw(self.screen)
             if coin.collect_player(player_rect):
-                pygame.mixer.Sound.play(self.coin_sound)
+                if not is_muted:
+                    pygame.mixer.Sound.play(self.coin_sound)
                 self.coin_count += 1
 
     def get_borders(self):

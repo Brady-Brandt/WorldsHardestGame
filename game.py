@@ -6,21 +6,31 @@ from button import Button
 from timer import *
 
 
-def pause_cb(btn, game):
+def pause_cb(_, game):
     if game.pause_menu is None and game.main_menu is None:
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         game.pause_menu = PauseMenu(game.screen)
         game.timer.pause()
 
-def pause_enter_cb(btn, game):
+def pause_enter_cb(_, game):
     if game.pause_menu is None and game.main_menu is None:
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         return True
 
-def pause_leave_cb(btn, game):
+def pause_leave_cb(_, game):
     if game.pause_menu is None and game.main_menu is None:
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         return False
+
+
+def mute_click_cb(_, game):
+    if game.is_muted:
+        game.is_muted = False
+        pygame.mixer.music.unpause()
+    else:
+        game.is_muted = True
+        pygame.mixer.music.pause()
+    return True
        
 class Game:
     def __init__(self, screen, dims, player):
@@ -44,13 +54,21 @@ class Game:
         # play the background music
         script_dir = os.path.dirname(__file__)
         file_path = os.path.join(script_dir, 'assets', 'background-music.mp3')
+
+        self.is_muted = False
         pygame.mixer.init()
         pygame.mixer.music.load(file_path)
         pygame.mixer.music.play(-1)
 
+        (mw, _)= self.font.size("Mute")
+        self.mute_btn = Button(screen, self.width - mw - 5, self.height - 50,
+                               "Mute",
+                               self.font,
+                               fg=(255,255,255),
+                               click=mute_click_cb)
+
 
         self.save_file_path = os.path.join(script_dir, 'save.txt')
- 
         self.main_menu = MainMenu(screen)
         self.pause_menu = None
         self.pause_btn = Button(screen,0,self.height-50,
@@ -164,10 +182,12 @@ class Game:
     def play_game(self, dt):
         if self.main_menu is not None:
             self.main_menu.draw()
+            self.mute_btn.draw()
             return
 
         self.timer.update()
         self.draw_hud()
+        self.mute_btn.draw()
         self.pause_btn.draw()
 
         if self.pause_menu is not None:
@@ -175,7 +195,7 @@ class Game:
             dt = 0 # dt = 0 to create an illusion that the game is paused 
 
         self.start_level()
-        self.current_level.draw_level(self.player, dt)
+        self.current_level.draw_level(self.player, dt, self.is_muted)
         self.player.move(dt, self.current_level.get_borders())
         if self.player.collide_enemy(self.current_level.get_enemies()):
             self.current_level.reset_coins()
