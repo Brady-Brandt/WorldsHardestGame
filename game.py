@@ -7,18 +7,19 @@ from timer import *
 
 
 def pause_cb(_, game):
-    if game.pause_menu is None and game.main_menu is None:
+    if game.pause_menu is None and game.main_menu is None and game.level_select_menu is None:
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         game.pause_menu = PauseMenu(game.screen)
         game.timer.pause()
+        return True
 
 def pause_enter_cb(_, game):
-    if game.pause_menu is None and game.main_menu is None:
+    if game.pause_menu is None and game.main_menu is None and game.level_select_menu is None:
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         return True
 
 def pause_leave_cb(_, game):
-    if game.pause_menu is None and game.main_menu is None:
+    if game.pause_menu is None and game.main_menu is None and game.level_select_menu is None:
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         return False
 
@@ -70,6 +71,7 @@ class Game:
 
         self.save_file_path = os.path.join(script_dir, 'save.txt')
         self.main_menu = MainMenu(screen)
+        self.level_select_menu = None
         self.pause_menu = None
         self.pause_btn = Button(screen,0,self.height-50,
                                 "Pause",
@@ -185,18 +187,30 @@ class Game:
             self.mute_btn.draw()
             return
 
+        if self.level_select_menu is not None:
+            self.level_select_menu.draw()
+            self.mute_btn.draw()
+            return
+
         self.timer.update()
         self.draw_hud()
         self.mute_btn.draw()
         self.pause_btn.draw()
 
+        # dt = 0 to create an illusion that the game is paused 
         if self.pause_menu is not None:
-            self.pause_menu.draw()
-            dt = 0 # dt = 0 to create an illusion that the game is paused 
+            dt = 0
+
 
         self.start_level()
         self.current_level.draw_level(self.player, dt, self.is_muted)
         self.player.move(dt, self.current_level.get_borders())
         if self.player.collide_enemy(self.current_level.get_enemies()):
             self.current_level.reset_coins()
+
+        # draw the pause menu down here so it gets put over the level 
+        if self.pause_menu is not None:
+            self.pause_menu.draw()
+
+
         self.draw_coin_count()
