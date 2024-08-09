@@ -31,7 +31,7 @@ class Timer:
             ms = self.save
         seconds = ms // 1000 % 60
         minutes = (ms // 60000) % 60
-        hours = minutes // (60000 * 60)
+        hours = ms // (60000 * 60)
         return f"{hours:02}:{minutes:02}:{seconds:02}"
 
     def draw(self):
