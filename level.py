@@ -91,6 +91,10 @@ def level_one(screen):
     level.rectangles.append(small_rect)
     small_rect.add_borders(level)
 
+    # fix an open space between small_rect & big_rect
+    tiny_rect_x = small_rect.top_border.dim.x + small_rect.top_border.dim.w
+    level.rectangles.append(Rectangle(Dim(tiny_rect_x, small_rect.top_border.dim.y, 30, bw)))
+
     # big rectangle
     big_rect_dim = Dim(
         first_check.right_border.dim.x +
@@ -118,6 +122,10 @@ def level_one(screen):
     final_rect.bottom_border.dim.w -= 30 + bw
     level.rectangles.append(final_rect)
     final_rect.add_borders(level)
+
+    # fix an open space between fin_small_rect & big_rect
+    tiny_rect_x = big_rect.top_border.dim.x + big_rect.top_border.dim.w
+    level.rectangles.append(Rectangle(Dim(tiny_rect_x, big_rect.top_border.dim.y, 30, bw)))
 
     last_check_dim = Dim(
         big_rect.dim.x +
