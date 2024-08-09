@@ -1,4 +1,5 @@
 import os
+import math
 from objects import *
 from enemy import Enemy
 
@@ -527,5 +528,161 @@ def level_three(screen):
     return level
 
 
-LEVELS = [level_one, level_two, level_three]
-MAX_LEVEL = 3
+def level_four(screen):
+    bw = Border.width
+    level = Level(screen, 10)
+    sq_w = 38
+    mid_x = screen.get_width() / 2
+    mid_y = screen.get_height() / 2
+
+    # first checkpoint
+    first_check = Checkpoint(Dim(mid_x, 200, sq_w * 2, sq_w * 2), False)
+    first_check.calc_borders((1, 2, 3))
+    first_check.add_borders(level)
+    level.checkpoints.append(first_check)
+
+    # long rect from first check to bottom of screen
+    tp_bh = sq_w
+
+    long_rect = Rectangle(
+        Dim(mid_x, first_check.dim.y + first_check.dim.h, first_check.dim.w, sq_w * 9))
+    long_rect.calc_borders((1, 3, 4))
+    long_rect.left_border.dim.h -= (long_rect.left_border.dim.h - tp_bh)
+    long_rect.right_border.dim.h -= (long_rect.right_border.dim.h - tp_bh)
+    long_rect.add_borders(level)
+    level.rectangles.append(long_rect)
+
+    # left
+    left_rect = Rectangle(Dim(long_rect.dim.x -
+                              sq_w, long_rect.dim.y +
+                              sq_w, sq_w, long_rect.dim.h -
+                              sq_w))
+    left_rect.calc_borders((1, 2, 4))
+    left_rect.left_border.dim.h -= (left_rect.left_border.dim.h - tp_bh)
+    left_rect.add_borders(level)
+    level.rectangles.append(left_rect)
+
+    bot_bd_x = left_rect.bottom_border.dim.x
+    bot_bd_y = left_rect.bottom_border.dim.y
+    level.borders.append(Border(Dim(bot_bd_x, bot_bd_y - sq_w, bw, sq_w)))
+
+    left_rect2 = Rectangle(Dim(left_rect.dim.x -
+                               sq_w, left_rect.dim.y +
+                               sq_w, sq_w, left_rect.dim.h -
+                               sq_w *
+                               2))
+    left_rect2.calc_borders((1, 2, 4))
+    left_rect2.left_border.dim.h -= (left_rect2.left_border.dim.h - tp_bh)
+    left_rect2.add_borders(level)
+    level.rectangles.append(left_rect2)
+
+    bot_bd_x = left_rect2.bottom_border.dim.x
+    bot_bd_y = left_rect2.bottom_border.dim.y
+    level.borders.append(Border(Dim(bot_bd_x, bot_bd_y - sq_w, bw, sq_w)))
+
+    left_rect3 = Rectangle(Dim(left_rect2.dim.x -
+                               sq_w, left_rect2.dim.y +
+                               sq_w, sq_w, left_rect2.dim.h -
+                               sq_w *
+                               2))
+    left_rect3.calc_borders((1, 2, 4))
+    left_rect3.left_border.dim.h -= (left_rect3.left_border.dim.h - tp_bh)
+    left_rect3.add_borders(level)
+    level.rectangles.append(left_rect3)
+
+    bot_bd_x = left_rect3.bottom_border.dim.x
+    bot_bd_y = left_rect3.bottom_border.dim.y
+    level.borders.append(Border(Dim(bot_bd_x, bot_bd_y - sq_w, bw, sq_w)))
+
+    # small rect before the final checkpoint
+    left_rect4 = Rectangle(Dim(left_rect3.dim.x -
+                               sq_w, left_rect3.dim.y +
+                               sq_w, sq_w, left_rect3.dim.h -
+                               sq_w *
+                               2))
+    left_rect4.calc_borders((2, 4))
+    left_rect4.add_borders(level)
+    level.rectangles.append(left_rect4)
+
+    final_check = Checkpoint(
+        Dim(left_rect4.dim.x - sq_w * 2, left_rect4.dim.y, sq_w * 2, sq_w * 2), True)
+    final_check.calc_borders((1, 2, 4))
+    final_check.add_borders(level)
+    level.checkpoints.append(final_check)
+
+    # right
+    right_rect = Rectangle(
+        Dim(long_rect.dim.x + long_rect.dim.w, left_rect.dim.y, sq_w, left_rect.dim.h))
+    right_rect.calc_borders((2, 3, 4))
+    right_rect.top_border.dim.x += bw
+    right_rect.right_border.dim.h -= (right_rect.right_border.dim.h - tp_bh)
+    right_rect.add_borders(level)
+    level.rectangles.append(right_rect)
+
+    right_rect2 = Rectangle(Dim(right_rect.dim.x +
+                                sq_w, right_rect.dim.y +
+                                sq_w, sq_w, right_rect.dim.h -
+                                sq_w *
+                                2))
+    right_rect2.calc_borders((2, 3, 4))
+    right_rect2.top_border.dim.x += bw
+    right_rect2.bottom_border.dim.x += bw
+    right_rect2.bottom_border.dim.w -= bw
+    right_rect2.right_border.dim.h -= (right_rect2.right_border.dim.h - tp_bh)
+    right_rect2.add_borders(level)
+    level.rectangles.append(right_rect2)
+
+    bot_bd_x = right_rect2.bottom_border.dim.x
+    bot_bd_y = right_rect2.bottom_border.dim.y
+    level.borders.append(Border(Dim(bot_bd_x, bot_bd_y, bw, sq_w)))
+
+    right_rect3 = Rectangle(Dim(right_rect2.dim.x +
+                                sq_w, right_rect2.dim.y +
+                                sq_w, sq_w, right_rect2.dim.h -
+                                sq_w *
+                                2))
+    right_rect3.calc_borders((2, 3, 4))
+    right_rect3.top_border.dim.x += bw
+    right_rect3.bottom_border.dim.x += bw
+    right_rect3.bottom_border.dim.x -= bw
+    right_rect3.add_borders(level)
+    level.rectangles.append(right_rect3)
+
+    bot_bd_x = right_rect3.bottom_border.dim.x
+    bot_bd_y = right_rect3.bottom_border.dim.y
+    level.borders.append(Border(Dim(bot_bd_x, bot_bd_y, bw, sq_w + bw)))
+
+    # enemies
+    mid_e_x = left_rect.dim.x + (long_rect.dim.w + right_rect.dim.w * 2) / 2
+    mid_e_y = right_rect.dim.y + right_rect.dim.h / 2
+    level.enemies.append(Enemy((mid_e_x, mid_e_y), [(0, 0, 0)]))
+    dis_between = Enemy.radius * 2
+
+    # 2a^2 = dis_between^2
+    offset = ((dis_between ** 2) / 2) ** (1 / 2) + Enemy.radius / 2
+    speed = 5 * offset
+    for i in range(1, 8):
+        e1 = Enemy((mid_e_x - offset * i, mid_e_y - offset * i), None)
+        e2 = Enemy((mid_e_x + offset * i, mid_e_y + offset * i), None)
+        e3 = Enemy((mid_e_x + offset * i, mid_e_y - offset * i), None)
+        e4 = Enemy((mid_e_x - offset * i, mid_e_y + offset * i), None)
+
+        e1.add_circular_motion((mid_e_x, mid_e_y), offset * (i), speed=speed)
+        e2.add_circular_motion((mid_e_x, mid_e_y), offset * (i), speed=speed)
+        e3.add_circular_motion((mid_e_x, mid_e_y), offset * (i), speed=speed)
+        e4.add_circular_motion((mid_e_x, mid_e_y), offset * (i), speed=speed)
+        level.enemies += [e1, e2, e3, e4]
+
+    # makes a circle of coins
+    coin_radius = offset * 4
+    for i in range(10):
+        angle = math.radians(i * 36)
+        coin_x = mid_e_x + coin_radius * math.cos(angle) - Coin.width / 2
+        coin_y = mid_e_y + coin_radius * math.sin(angle) - Coin.width / 2
+        level.coins.append(Coin((coin_x, coin_y)))
+
+    return level
+
+
+LEVELS = [level_one, level_two, level_three, level_four]
+MAX_LEVEL = 4
