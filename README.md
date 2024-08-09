@@ -1,2 +1,43 @@
-# WorldsHardestGame
-This my own version of the world's hardest game that I decided to create as a side project for when I am bored at school. I primarily worked on this project at school and I wasn't even sure if I was going to stick with it. This is why the git commits are so spaced out and terrible and the code is poorly written. I also tried to build my own level file format, which I thought would help make levels easier, but it didn't. 
+# World's Hardest Game
+This is my attempt to clone some levels from the World's Hardest Game using Python and Pygame. 
+
+
+## Installation
+
+### Prerequisites
+- Python version 3.9 or greater 
+
+### Steps
+
+1. Clone the repository:
+
+    ```sh
+    git clone https://github.com/Brady-Brandt/WorldsHardestGame.git
+    cd WorldsHardestGame
+    ```
+
+2. Install the required packages: (Pygame 2.0)
+
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+3. Run the game:
+
+    ```sh
+    python main.py
+    ```
+
+## Gameplay 
+Navigate with the arrow keys or wasd to the end of the level while collecting all coins and dodging the blue balls. 
+
+
+### Images 
+![Main Menu](images/menu.png) 
+##
+![Level 1](images/level1.png) 
+##
+![Level 2 with pause menu open](images/level2.png) 
+##
+![Level 4](images/level4.png) 
+
